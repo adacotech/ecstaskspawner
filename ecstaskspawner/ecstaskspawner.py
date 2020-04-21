@@ -47,13 +47,13 @@ class Datetime(TraitType):
     default_value = datetime.datetime(1900, 1, 1)
 
 
-class FargateSpawnerAuthentication(Configurable):
+class ECSTaskSpawnerAuthentication(Configurable):
 
     async def get_credentials(self):
         raise NotImplementedError()
 
 
-class FargateSpawnerSecretAccessKeyAuthentication(FargateSpawnerAuthentication):
+class ECSTaskSpawnerSecretAccessKeyAuthentication(ECSTaskSpawnerAuthentication):
 
     aws_access_key_id = Unicode(config=True)
     aws_secret_access_key = Unicode(config=True)
@@ -67,7 +67,7 @@ class FargateSpawnerSecretAccessKeyAuthentication(FargateSpawnerAuthentication):
         )
 
 
-class FargateSpawnerECSRoleAuthentication(FargateSpawnerAuthentication):
+class ECSTaskSpawnerECSRoleAuthentication(ECSTaskSpawnerAuthentication):
 
     aws_access_key_id = Unicode()
     aws_secret_access_key = Unicode()
@@ -94,7 +94,7 @@ class FargateSpawnerECSRoleAuthentication(FargateSpawnerAuthentication):
         )
 
 
-class FargateSpawner(Spawner):
+class ECSTaskSpawner(Spawner):
 
     aws_region = Unicode(config=True)
     aws_ecs_host = Unicode(config=True)
@@ -108,8 +108,8 @@ class FargateSpawner(Spawner):
     notebook_scheme = Unicode(config=True)
     notebook_args = List(trait=Unicode, config=True)
 
-    authentication_class = Type(FargateSpawnerAuthentication, config=True)
-    authentication = Instance(FargateSpawnerAuthentication)
+    authentication_class = Type(ECSTaskSpawnerAuthentication, config=True)
+    authentication = Instance(ECSTaskSpawnerAuthentication)
 
     @default('authentication')
     def _default_authentication(self):

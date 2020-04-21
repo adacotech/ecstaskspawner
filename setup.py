@@ -4,14 +4,14 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='fargatespawner',
-    version='0.0.23',
-    author='Department for International Trade - WebOps',
-    author_email='webops@digital.trade.gov.uk',
-    description='Spawns JupyterHub single user servers in Docker containers running in AWS Fargate',
+    name='ecstaskspawner',
+    version='0.1.0',
+    author='kackyt',
+    author_email='t_kaki@nextappli.com',
+    description='Spawns JupyterHub single user servers in Docker containers running in AWS ECS Task',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/uktrade/fargatespawner',
+    url='https://github.com/adacotech/ecstaskspawner',
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',

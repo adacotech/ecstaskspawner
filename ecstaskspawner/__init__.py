@@ -1,0 +1,3 @@
+from .ecstaskspawner import ECSTaskSpawner
+from .ecstaskspawner import ECSTaskSpawnerSecretAccessKeyAuthentication
+from .ecstaskspawner import ECSTaskSpawnerECSRoleAuthentication

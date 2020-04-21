@@ -36,6 +36,7 @@ from traitlets import (
     Unicode,
     default,
 )
+import traitlets
 
 AwsCreds = namedtuple('AwsCreds', [
     'access_key_id', 'secret_access_key', 'pre_auth_headers',
@@ -98,6 +99,8 @@ class ECSTaskSpawner(Spawner):
 
     aws_region = Unicode(config=True)
     aws_ecs_host = Unicode(config=True)
+    launch_type = Unicode(config=True)
+    assign_public_ip = Bool(False, config=True)
     task_role_arn = Unicode(config=True)
     task_cluster_name = Unicode(config=True)
     task_container_name = Unicode(config=True)
@@ -166,6 +169,8 @@ class ECSTaskSpawner(Spawner):
             args = debug_args + ['--port=' + str(task_port)] + self.notebook_args
             run_response = await _run_task(
                 self.log, self._aws_endpoint(),
+                self.launch_type,
+                self.assign_public_ip,
                 self.task_role_arn,
                 self.task_cluster_name, self.task_container_name, self.task_definition_arn,
                 self.task_security_groups, self.task_subnets,
@@ -288,10 +293,12 @@ async def _describe_task(logger, aws_endpoint, task_cluster_name, task_arn):
 
 
 async def _run_task(logger, aws_endpoint,
+                    launch_type,
+                    assign_public_ip,
                     task_role_arn,
                     task_cluster_name, task_container_name, task_definition_arn, task_security_groups, task_subnets,
                     task_command_and_args, task_env):
-    return await _make_ecs_request(logger, aws_endpoint, 'RunTask', {
+    dict_data = {
         'cluster': task_cluster_name,
         'taskDefinition': task_definition_arn,
         'overrides': {
@@ -308,15 +315,19 @@ async def _run_task(logger, aws_endpoint,
             }],
         },
         'count': 1,
-        'launchType': 'FARGATE',
         'networkConfiguration': {
             'awsvpcConfiguration': {
-                'assignPublicIp': 'DISABLED',
+                'assignPublicIp': "ENABLED" if assign_public_ip else "DISABLED",
                 'securityGroups': task_security_groups,
                 'subnets': task_subnets,
             },
         },
-    })
+    }
+
+    if launch_type != traitlets.Undefined:
+        dict_data['launchType'] = launch_type
+
+    return await _make_ecs_request(logger, aws_endpoint, 'RunTask', dict_data)
 
 
 async def _make_ecs_request(logger, aws_endpoint, target, dict_data):

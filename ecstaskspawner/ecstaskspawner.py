@@ -165,8 +165,7 @@ class ECSTaskSpawner(Spawner):
         self.progress_buffer.write({'progress': 0.5, 'message': 'Starting server...'})
         try:
             self.calling_run_task = True
-            debug_args = ['--debug'] if self.debug else []
-            args = debug_args + ['--port=' + str(task_port)] + self.notebook_args
+            args = get_args() + self.notebook_args
             run_response = await _run_task(
                 self.log, self._aws_endpoint(),
                 self.launch_type,

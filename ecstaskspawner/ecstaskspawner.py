@@ -107,7 +107,6 @@ class ECSTaskSpawner(Spawner):
     task_definition_arn = Unicode(config=True)
     task_security_groups = List(trait=Unicode, config=True)
     task_subnets = List(trait=Unicode, config=True)
-    notebook_port = Int(config=True)
     notebook_scheme = Unicode(config=True)
     notebook_args = List(trait=Unicode, config=True)
 
@@ -160,7 +159,7 @@ class ECSTaskSpawner(Spawner):
     async def start(self):
         self.log.debug('Starting spawner')
 
-        task_port = self.notebook_port
+        task_port = self.port
 
         self.progress_buffer.write({'progress': 0.5, 'message': 'Starting server...'})
         try:
